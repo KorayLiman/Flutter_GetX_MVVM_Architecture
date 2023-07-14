@@ -6,7 +6,7 @@ import 'package:getx_new_mvvm_architecture/core/network/network_manager.dart';
 import 'package:getx_new_mvvm_architecture/product/enum/http_type.dart';
 import 'package:getx_new_mvvm_architecture/product/enum/network_path.dart';
 
-abstract class BaseService {
+abstract base class BaseService {
   BaseService(this._networkManager);
   late final NetworkManager _networkManager;
 
