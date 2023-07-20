@@ -19,7 +19,7 @@ class LocalStorage extends GetxService with DebugPrinterMixin {
         AppUser appUser => _appUserBox.put(appUser),
       };
     } catch (e) {
-      debugPrint(e);
+      printDebug(e);
       return -1;
     }
   }
@@ -31,10 +31,11 @@ class LocalStorage extends GetxService with DebugPrinterMixin {
         AppUser appUser => _appUserBox.remove(appUser.entityId),
       };
     } catch (e) {
-      debugPrint(e);
+      printDebug(e);
       return false;
     }
   }
+
   /// Returns AppUser? object with given entityId
   AppUser? getAppUser({required int entityId}) {
     return _appUserBox.get(entityId);

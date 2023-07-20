@@ -1,7 +1,7 @@
 import 'package:flutter/foundation.dart';
 
 mixin class DebugPrinterMixin {
-  void debugPrint(Object? object) {
+  void printDebug(Object? object) {
     if (kDebugMode) {
       print(object);
     }
