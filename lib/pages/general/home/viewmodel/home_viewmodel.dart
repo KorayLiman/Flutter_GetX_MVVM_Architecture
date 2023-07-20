@@ -9,6 +9,8 @@ import '../../../../product/constants/app_constants.dart';
 import '../../../../product/model/local_storage_models.dart';
 
 final class HomeViewModel extends BaseViewModel {
+  static bool get isRegistered => Get.isRegistered<HomeViewModel>();
+  static HomeViewModel? get to => isRegistered ? Get.find() : null;
   @override
   void onInit() {
     setPageState(PageState.loading);
