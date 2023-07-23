@@ -38,6 +38,7 @@ class CoreDio with NetworkLoggerMixin {
       if (showIndicator) _loaderManager.show();
       if (kDebugMode) logRequestInfo(requestUrl: "${_dio.options.baseUrl}${path.path}", type: type, data: data, pathSuffix: pathSuffix, headers: headers, queryParameters: queryParameters);
       _dio.options = _baseOptions.copyWith(connectTimeout: connectionTimeout, receiveTimeout: receiveTimeout, sendTimeout: sendTimeout);
+      int requestStartTime = DateTime.now().millisecondsSinceEpoch;
       Response<T> response = await _dio.request<T>(
         pathSuffix == null ? path.path : "${path.path}/$pathSuffix",
         queryParameters: queryParameters?.toJson(),
@@ -48,7 +49,8 @@ class CoreDio with NetworkLoggerMixin {
           contentType: contentType,
         ),
       );
-      return _getPrimitiveSuccessResponse(response: response, requestUrl: "${_dio.options.baseUrl}${path.path}");
+      final responseTimeMilliseconds = DateTime.now().millisecondsSinceEpoch - requestStartTime;
+      return _getPrimitiveSuccessResponse(response: response, requestUrl: "${_dio.options.baseUrl}${path.path}", responseTime: responseTimeMilliseconds);
     } catch (exception) {
       return _getPrimitiveErrorResponse(error: exception, requestUrl: "${_dio.options.baseUrl}${path.path}");
     } finally {
@@ -75,6 +77,7 @@ class CoreDio with NetworkLoggerMixin {
       if (showIndicator) _loaderManager.show();
       if (kDebugMode) logRequestInfo(requestUrl: "${_dio.options.baseUrl}${path.path}", type: type, data: data, pathSuffix: pathSuffix, headers: headers, queryParameters: queryParameters);
       _dio.options = _baseOptions.copyWith(connectTimeout: connectionTimeout, receiveTimeout: receiveTimeout, sendTimeout: sendTimeout);
+      int requestStartTime = DateTime.now().millisecondsSinceEpoch;
       Response response = await _dio.request(
         pathSuffix == null ? path.path : "${path.path}$pathSuffix",
         queryParameters: queryParameters?.toJson(),
@@ -85,7 +88,8 @@ class CoreDio with NetworkLoggerMixin {
           contentType: contentType,
         ),
       );
-      return _getSuccessResponse<T, M>(response: response, requestUrl: "${_dio.options.baseUrl}${path.path}", responseEntityModel: responseEntityModel);
+      final responseTimeMilliseconds = DateTime.now().millisecondsSinceEpoch - requestStartTime;
+      return _getSuccessResponse<T, M>(response: response, requestUrl: "${_dio.options.baseUrl}${path.path}", responseEntityModel: responseEntityModel, responseTime: responseTimeMilliseconds);
     } catch (exception) {
       return _getErrorResponse(error: exception, requestUrl: "${_dio.options.baseUrl}${path.path}");
     } finally {
@@ -93,13 +97,13 @@ class CoreDio with NetworkLoggerMixin {
     }
   }
 
-  BaseResponse<T> _getPrimitiveSuccessResponse<T extends Object>({required Response<T> response, required String requestUrl}) {
-    if (kDebugMode) logResponseInfo(response: response, requestUrl: requestUrl);
+  BaseResponse<T> _getPrimitiveSuccessResponse<T extends Object>({required Response<T> response, required String requestUrl, required int responseTime}) {
+    if (kDebugMode) logResponseInfo(response: response, responseTime: responseTime, requestUrl: requestUrl);
     return BaseResponse<T>(data: response.data);
   }
 
-  BaseResponse<T> _getSuccessResponse<T, M extends BaseModel>({required Response response, required String requestUrl, required M responseEntityModel}) {
-    if (kDebugMode) logResponseInfo(response: response, requestUrl: requestUrl);
+  BaseResponse<T> _getSuccessResponse<T, M extends BaseModel>({required Response response, required String requestUrl, required M responseEntityModel, required int responseTime}) {
+    if (kDebugMode) logResponseInfo(response: response, responseTime: responseTime, requestUrl: requestUrl);
     T? data = _getData(jsonResponse: response.data, responseEntityModel: responseEntityModel);
     return BaseResponse<T>(data: data);
   }
