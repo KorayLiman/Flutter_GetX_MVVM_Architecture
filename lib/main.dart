@@ -21,7 +21,7 @@ void _runApplication() {
   runZonedGuarded(
     () {
       _init();
-      runApp(_myApp);
+      runApp(const MyApp());
     },
     (error, stack) {
       FirebaseCrashlytics.instance.recordError(error, stack, fatal: true);
@@ -29,9 +29,16 @@ void _runApplication() {
   );
 }
 
-Widget get _myApp => GetMaterialApp(
+class MyApp extends StatelessWidget {
+  const MyApp({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return GetMaterialApp(
       debugShowCheckedModeBanner: false,
       theme: AppConstants.appTheme.theme,
       getPages: getPages,
       initialRoute: NavigationConstants.splash.pageName,
     );
+  }
+}
